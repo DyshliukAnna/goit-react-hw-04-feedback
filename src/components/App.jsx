@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.css';
 
 import { Statistics } from './Statistics/Statistics';
@@ -6,45 +6,51 @@ import { Section } from './Section/Section';
 import { DescriptionMessage } from './DescriptionMessage/DescriptionMessage';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 
-class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+const App =()=> {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  clickFeedback = option => {
-    const stateKey = option;
-    this.setState(prevState => {
-      return {
-        [stateKey]: prevState[stateKey] + 1,
-      };
-    });
-  };
+  const clickFeedback = event => {
+    const stateKey = event.target.textContent.toLowerCase();
+    
+    switch (stateKey) {
+      case 'good':
+        setGood(prevState => prevState + 1);
+        break;
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
+      case 'neutral':
+        setNeutral(prevState => prevState + 1);
+        break;
+
+      case 'bad':
+        setBad(prevState => prevState + 1);
+        break;
+
+      default:
+        return;
+    }
+  };
+    
+  const countTotalFeedback = () => {
     return good + neutral + bad;
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const totalFeedback = this.countTotalFeedback();
-    const { good } = this.state;
+  const countPositiveFeedbackPercentage = () => {
+    const totalFeedback = countTotalFeedback();
     return totalFeedback > 0 && Math.ceil((good / totalFeedback) * 100);
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    const totalFeedback = this.countTotalFeedback();
-    const PositiveFeedbackPercentege = this.countPositiveFeedbackPercentage();
+    const totalFeedback = countTotalFeedback();
+    const PositiveFeedbackPercentege = countPositiveFeedbackPercentage();
     return (
       <>
         <div className="container">
           <div className="wrapper">
             <Section title="Please leave feedback">
               <FeedbackOptions
-                options={Object.keys(this.state)}
-                onLeaveFeedback={this.clickFeedback}
+                options={['good', 'neutral', 'bad']}
+                onLeaveFeedback={clickFeedback}
               />
             </Section>
             <Section title={'Statistics'}>
@@ -65,6 +71,5 @@ class App extends Component {
       </>
     );
   }
-}
 
 export default App;
