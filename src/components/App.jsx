@@ -11,10 +11,20 @@ const App =()=> {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
 
-  const clickFeedback = event => {
-    const stateKey = event.target.textContent.toLowerCase();
-    
-    switch (stateKey) {
+  // const clickFeedback = name => {
+  //   if (name === 'good') {
+  //     setGood(prevGood => prevGood + 1);
+  //     return;
+  //   } else if (name === 'neutral') {
+  //     setNeutral(prevNeutral => prevNeutral + 1);
+  //     return;
+  //   } else if (name === 'bad') {
+  //     setBad(prevBad => prevBad + 1);
+  //     return;
+  //   }
+  // };
+  const clickFeedback = name  => {
+    switch (name) {
       case 'good':
         setGood(prevState => prevState + 1);
         break;
@@ -36,13 +46,10 @@ const App =()=> {
     return good + neutral + bad;
   };
 
-  const countPositiveFeedbackPercentage = () => {
-    const totalFeedback = countTotalFeedback();
-    return totalFeedback > 0 && Math.ceil((good / totalFeedback) * 100);
+  const countPositiveFeedback = () => {
+    return countTotalFeedback() > 0 && Math.ceil((good / countTotalFeedback()) * 100);
   };
 
-    const totalFeedback = countTotalFeedback();
-    const PositiveFeedbackPercentege = countPositiveFeedbackPercentage();
     return (
       <>
         <div className="container">
@@ -54,13 +61,13 @@ const App =()=> {
               />
             </Section>
             <Section title={'Statistics'}>
-              {totalFeedback > 0 ? (
+              {countTotalFeedback() > 0 ? (
                 <Statistics
                   good={good}
                   neutral={neutral}
                   bad={bad}
-                  total={totalFeedback}
-                  positivePercentage={PositiveFeedbackPercentege}
+                  total={countTotalFeedback()}
+                  positivePercentage={countPositiveFeedback()}
                 />
               ) : (
                 <DescriptionMessage message="There is no feedback" />
